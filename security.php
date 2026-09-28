@@ -19,7 +19,20 @@ function checkCsrf(): void {
     }
 }
 function audit(string $event, array $details = []): void {
-    // JSON keeps untrusted values from forging log lines.
-    error_log(json_encode(['time' => gmdate('c'), 'event' => $event,
-        'ip' => $_SERVER['REMOTE_ADDR'] ?? '', 'details' => $details]));
+    // Record the local date, time, and timezone for each event.
+    $now = new DateTimeImmutable('now', new DateTimeZone('Asia/Riyadh'));
+    $entry = json_encode(['time' => $now->format(DateTimeInterface::ATOM),
+        'timezone' => $now->getTimezone()->getName(), 'event' => $event,
+        'ip' => $_SERVER['REMOTE_ADDR'] ?? '', 'details' => $details], JSON_INVALID_UTF8_SUBSTITUTE) . PHP_EOL;
+    $directory = __DIR__ . '/logs';
+    if (!is_dir($directory) && !@mkdir($directory, 0750, true) && !is_dir($directory)) {
+        error_log('Audit directory unavailable: ' . $entry);
+        return;
+    }
+    // Use the actual event time in a filename-safe format.
+    $timezone = str_replace('/', '-', $now->getTimezone()->getName());
+    $filename = $directory . '/audit-' . $now->format('Y-m-d_H-i-s') . '-' . $timezone . '.log';
+    if (@file_put_contents($filename, $entry, FILE_APPEND | LOCK_EX) === false) {
+        error_log('Audit file unavailable: ' . $entry);
+    }
 }

@@ -29,8 +29,10 @@ A simple PHP application for a fuel panel dashboard, using an SQLite database.
 
 Set `ADMIN_PASSWORD`, `MANAGER_A_PASSWORD`, and `MANAGER_B_PASSWORD` to unique passwords of at least 12 characters and pass them to Docker with `-e ADMIN_PASSWORD -e MANAGER_A_PASSWORD -e MANAGER_B_PASSWORD`. These are required on first startup and when replacing the original default credentials in an existing database. Existing data is migrated transactionally.
 
-Use HTTPS in deployment; session cookies receive the Secure flag on HTTPS (local HTTP remains supported). Apache denies access to SQLite files and logs. Audit events go to the PHP server error log. Five login attempts per account or client address are allowed per 15 minutes. Managers can access only their assigned station; admins can select any station.
-
 ``` powershell
 cp .env.example .env
 ```
+
+## Addtional requirements for prod environment
+
+- *HTTPS*: session cookies receive the Secure flag on HTTPS (local HTTP remains supported).

@@ -23,7 +23,10 @@ $query = $db->prepare('SELECT * FROM sales WHERE station_id = ? ORDER BY sold_at
 $query->execute([$station]);
 $sales = $query->fetchAll();
 $query = $db->prepare('SELECT * FROM stations WHERE ? = 1 OR id = ? ORDER BY id');
-$query->execute([$admin ? 1 : 0, $station]);
+// Bind the admin flag as an integer so SQLite matches it to 1.
+$query->bindValue(1, $admin ? 1 : 0, PDO::PARAM_INT);
+$query->bindValue(2, (int) $station, PDO::PARAM_INT);
+$query->execute();
 $stations = $query->fetchAll();
 audit('station_view', ['user_id' => $user['id'], 'station_id' => $station]);
 ?>
