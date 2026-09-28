@@ -1,5 +1,6 @@
 # Pure-IN Fuel Panel
-*started at 28/09/2026 4:42PM, total spent time $$:$$:$$.$$*
+*started at 28/09/2026 4:42PM, total spent time 03:04:18.42*  
+*(Note: I Took a long break, which is why it took longer to submit)*
 
 A simple PHP application for a fuel panel dashboard, using an SQLite database.
 
