@@ -30,3 +30,22 @@ docker stop purein-web-container
 docker rm purein-web-container
 docker run -d --name purein-web-container -p 8080:80 --env-file .env purein-web-app
 ```
+
+## 4. Error handling and responses
+(ChatGPT GPT-6.1 Astra)
+
+Improve the application error handling and make the error messages more user-friendly:
+- for 429 error show a clear message directly inside the login form instead of a separate error page.
+- for 403, show 404 to protect critical files and directories
+- For Access denied just show a clear message with a button that takes the user back to /sales.php showing the default station of user
+- handle other expected errors properly with clear, human-readable messages and appropriate navigation options such as go back or try again.
+- never expose stack traces, internal exception details, file paths, database errors, or other sensitive debugging information in HTTP responses or the UI. log technical details server-side when needed, while showing users only safe error messages.
+- update the README to document the new error-handling behavior and security improvements.
+
+## 5. localization and ar/en switch
+(ChatGPT GPT-6 Astra)
+
+what is the best approcch for php to do: ar/en rtl/ltr ? and to makes the phone vies sales responsivly?
+
+--- 
+Work with this plan and make sure to implement rtl properly (in html tag and query parameters), add swtich languages buttons.

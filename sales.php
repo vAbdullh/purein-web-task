@@ -43,36 +43,37 @@ $stations = $query->fetchAll();
 audit('station_view', ['user_id' => $user['id'], 'station_id' => $station]);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= language() ?>" dir="<?= direction() ?>">
 <head>
   <meta charset="utf-8">
-  <title>Sales - Fuel Panel</title>
+  <title><?= escape(t('Sales')) ?> - <?= escape(t('Fuel Panel')) ?></title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="top">Logged in as <?= escape($user['username']) ?> | <form method="post" action="logout.php">
+  <?php languageSwitch(); ?>
+  <div class="top"><?= escape(t('Logged in as')) ?> <bdi><?= escape($user['username']) ?></bdi> | <form method="post" action="logout.php">
     <input type="hidden" name="csrf" value="<?= escape($_SESSION['csrf']) ?>">
-    <button>Log out</button></form></div>
-  <h1>Sales</h1>
+    <button><?= escape(t('Log out')) ?></button></form></div>
+  <h1><?= escape(t('Sales')) ?></h1>
 
   <form method="get">
-    <select name="station">
+    <select name="station" aria-label="<?= escape(t('Station')) ?>">
       <?php foreach ($stations as $s): ?>
-        <option value="<?= escape($s['id']) ?>" <?= $s['id'] == $station ? 'selected' : '' ?>><?= escape($s['name']) ?></option>
+        <option value="<?= escape($s['id']) ?>" <?= $s['id'] == $station ? 'selected' : '' ?>><?= escape(t($s['name'])) ?></option>
       <?php endforeach; ?>
     </select>
-    <button>Show</button>
+    <button><?= escape(t('Show')) ?></button>
   </form>
 
   <table class="sales">
-    <tr><th>Time</th><th>Pump</th><th>Fuel</th><th>Litres</th><th>Amount (SAR)</th></tr>
+    <tr><th><?= escape(t('Time')) ?></th><th><?= escape(t('Pump')) ?></th><th><?= escape(t('Fuel')) ?></th><th><?= escape(t('Litres')) ?></th><th><?= escape(t('Amount (SAR)')) ?></th></tr>
     <?php foreach ($sales as $row): ?>
       <tr>
-        <td><?= escape($row['sold_at']) ?></td>
-        <td><?= escape($row['pump']) ?></td>
-        <td><?= escape($row['fuel']) ?></td>
-        <td><?= escape($row['litres']) ?></td>
-        <td><?= escape(sprintf('%f', $row['amount'])) ?></td>
+        <td><bdi><?= escape(localizedDate($row['sold_at'])) ?></bdi></td>
+        <td><bdi><?= escape(localizedNumber($row['pump'])) ?></bdi></td>
+        <td><bdi><?= escape(t($row['fuel'])) ?></bdi></td>
+        <td><bdi><?= escape(localizedNumber($row['litres'], 2)) ?></bdi></td>
+        <td><bdi><?= escape(localizedNumber($row['amount'], 2, true)) ?></bdi></td>
       </tr>
     <?php endforeach; ?>
   </table>

@@ -49,23 +49,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= language() ?>" dir="<?= direction() ?>">
 <head>
   <meta charset="utf-8">
-  <title>Fuel Panel</title>
+  <title><?= escape(t('Fuel Panel')) ?></title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <?php languageSwitch(); ?>
   <div class="box">
-    <h1>Fuel Panel</h1>
-    <?php if ($error): ?><p class="error" role="alert"><?= escape($error) ?></p><?php endif; ?>
+    <h1><?= escape(t('Fuel Panel')) ?></h1>
+    <?php if ($error): ?><p class="error" role="alert"><?= escape(t($error)) ?></p><?php endif; ?>
     <form method="post">
       <input type="hidden" name="csrf" value="<?= escape($_SESSION['csrf']) ?>">
-      <p><label>Username<br><input name="username" autocomplete="username" value="<?= escape($username) ?>"></label></p>
-      <p><label>Password<br><input name="password" type="password" autocomplete="current-password"></label></p>
-      <p><button>Log in</button></p>
+      <p><label><?= escape(t('Username')) ?><br><input dir="auto" name="username" autocomplete="username" value="<?= escape($username) ?>"></label></p>
+      <p><label><?= escape(t('Password')) ?><br><input name="password" type="password" autocomplete="current-password"></label></p>
+      <p><button><?= escape(t('Log in')) ?></button></p>
     </form>
-    <?php if ($retryAfter > 0): ?><p><a class="button" href="index.php">Back to login</a></p><?php endif; ?>
+    <?php if ($retryAfter > 0): ?><p><a class="button" href="index.php"><?= escape(t('Back to login')) ?></a></p><?php endif; ?>
   </div>
 </body>
 </html>

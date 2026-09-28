@@ -14,6 +14,7 @@ session_set_cookie_params([
     'samesite' => 'Strict',
 ]);
 session_start();
+require_once __DIR__ . '/language.php';
 $_SESSION['csrf'] ??= bin2hex(random_bytes(32));
 function escape($value): string {
     return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -50,21 +51,22 @@ function showError(int $status, string $title, string $message): never {
     $signedIn = !empty($_SESSION['user']);
     ?>
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="<?= language() ?>" dir="<?= direction() ?>">
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title><?= escape($title) ?> - Fuel Panel</title>
+      <title><?= escape(t($title)) ?> - <?= escape(t('Fuel Panel')) ?></title>
       <link rel="stylesheet" href="/style.css">
     </head>
     <body class="error-page">
       <main class="error-card">
-        <p class="error-code">Fuel Panel &middot; <?= $status ?></p>
-        <h1><?= escape($title) ?></h1>
-        <p><?= escape($message) ?></p>
+        <?php languageSwitch(); ?>
+        <p class="error-code"><?= escape(t('Fuel Panel')) ?> &middot; <?= $status ?></p>
+        <h1><?= escape(t($title)) ?></h1>
+        <p><?= escape(t($message)) ?></p>
         <div class="error-actions">
-          <a class="button" href="<?= $signedIn ? '/sales.php' : '/index.php' ?>"><?= $signedIn ? 'Back to sales' : 'Back to login' ?></a>
-          <?php if ($signedIn): ?><a href="/index.php">Go to login</a><?php endif; ?>
+          <a class="button" href="<?= $signedIn ? '/sales.php' : '/index.php' ?>"><?= escape(t($signedIn ? 'Back to sales' : 'Back to login')) ?></a>
+          <?php if ($signedIn): ?><a href="/index.php"><?= escape(t('Go to login')) ?></a><?php endif; ?>
         </div>
       </main>
     </body>

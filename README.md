@@ -58,3 +58,9 @@ Forbidden access, invalid or missing stations, expired forms, and incorrect logo
 - **Hidden private resources:** protected files and directories return HTTP 404 with the same Page not found message as missing resources, rather than revealing them with HTTP 403. Access restrictions remain enforced.
 - **Wrong station:** attempts to view another manager's station return HTTP 404 with a Wrong station message and a Back to sales button.
 - **Hidden implementation errors:** unexpected application failures show a generic error page. Stack traces, internal paths, and exception details are kept out of browser responses and recorded in the server error log.
+
+## Arabic and English
+
+Use the العربية / English switch to choose a language. The choice is remembered in a cookie across login and logout. English is the default and fallback; only `ar` and `en` are accepted. Shared translations in `lang/ar.php` and `lang/en.php` cover login, sales, navigation, and error messages. Arabic uses RTL and English uses LTR with one shared stylesheet. Unknown station or fuel names retain their original text.
+
+The Docker image includes PHP `intl` for localized numbers, SAR amounts, and Gregorian dates. Stored UTC sale times display in Asia/Riyadh in either language. Audit event names and timestamps remain independent of the interface language. The phone sales layout is deferred.

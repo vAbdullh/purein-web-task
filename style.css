@@ -3,9 +3,9 @@ h1 { font-size: 22px; }
 .box { width: 400px; margin: 80px auto; }
 .box input { width: 250px; padding: 4px; }
 .error { color: #b00; }
-.top { float: right; font-size: 13px; }
+.top { float: inline-end; font-size: 13px; }
 table.sales { width: 1100px; border-collapse: collapse; margin-top: 16px; }
-table.sales th, table.sales td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; }
+table.sales th, table.sales td { border: 1px solid #ccc; padding: 6px 12px; text-align: start; }
 table.sales th { background: #f2f2f2; }
 
 /* Keep error messages readable on small screens. */
@@ -18,3 +18,9 @@ table.sales th { background: #f2f2f2; }
 .button:hover { background: #103b68; }
 .button:focus-visible { outline: 3px solid #d48200; outline-offset: 3px; }
 .box { max-width: 100%; }
+
+/* Shared language controls work in either writing direction. */
+.language-switch { display: flex; gap: 12px; margin-block-end: 16px; }
+.language-switch a { color: #164e87; text-underline-offset: 3px; }
+.language-switch a[aria-current="true"] { font-weight: bold; }
+body { text-align: start; }
