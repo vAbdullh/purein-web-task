@@ -1,0 +1,6 @@
+# Never ship local data or repository history.
+.git
+app.sqlite*
+*.db
+logs
+.env*

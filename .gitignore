@@ -24,3 +24,6 @@
 /app/Config/database.php
 /vendors/*
 app.sqlite
+# Ignore SQLite journals and local credentials.
+app.sqlite-*
+.env

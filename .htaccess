@@ -1,0 +1,7 @@
+# Keep database files, logs, and repository metadata private.
+<FilesMatch "(?i)(^\.|\.(sqlite|sqlite3|db)(-.*)?$|\.log$|\.md$|^Dockerfile$)">
+    Require all denied
+</FilesMatch>
+
+# Block private directories as well as individual files.
+RedirectMatch 403 "(?i)/(\.git|logs)(/|$)"
