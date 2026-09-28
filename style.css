@@ -1,10 +1,11 @@
-body { font-family: Arial, sans-serif; margin: 20px; color: #222; }
+body { font-family: Arial, sans-serif; margin: 0; padding: 16px; color: #222; }
 h1 { font-size: 22px; }
-.box { width: 400px; margin: 80px auto; }
-.box input { width: 250px; padding: 4px; }
+.box { max-width: 400px; width: 100%; margin: 80px auto; }
+.box input { width: 100%; max-width: 250px; padding: 4px; box-sizing: border-box; }
 .error { color: #b00; }
 .top { float: inline-end; font-size: 13px; }
-table.sales { width: 1100px; border-collapse: collapse; margin-top: 16px; }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table.sales { width: 100%; border-collapse: collapse; margin-top: 16px; }
 table.sales th, table.sales td { border: 1px solid #ccc; padding: 6px 12px; text-align: start; }
 table.sales th { background: #f2f2f2; }
 

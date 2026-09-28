@@ -46,6 +46,7 @@ audit('station_view', ['user_id' => $user['id'], 'station_id' => $station]);
 <html lang="<?= language() ?>" dir="<?= direction() ?>">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= escape(t('Sales')) ?> - <?= escape(t('Fuel Panel')) ?></title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -65,6 +66,7 @@ audit('station_view', ['user_id' => $user['id'], 'station_id' => $station]);
     <button><?= escape(t('Show')) ?></button>
   </form>
 
+  <div class="table-scroll">
   <table class="sales">
     <tr><th><?= escape(t('Time')) ?></th><th><?= escape(t('Pump')) ?></th><th><?= escape(t('Fuel')) ?></th><th><?= escape(t('Litres')) ?></th><th><?= escape(t('Amount (SAR)')) ?></th></tr>
     <?php foreach ($sales as $row): ?>
@@ -77,5 +79,6 @@ audit('station_view', ['user_id' => $user['id'], 'station_id' => $station]);
       </tr>
     <?php endforeach; ?>
   </table>
+  </div>
 </body>
 </html>

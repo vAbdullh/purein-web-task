@@ -52,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="<?= language() ?>" dir="<?= direction() ?>">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= escape(t('Fuel Panel')) ?></title>
   <link rel="stylesheet" href="style.css">
 </head>
