@@ -4,4 +4,10 @@
 </FilesMatch>
 
 # Block private directories as well as individual files.
-RedirectMatch 403 "(?i)/(\.git|logs)(/|$)"
+RedirectMatch 404 "(?i)/(\.git|logs)(/|$)"
+
+# Show friendly pages for server-level errors too.
+ErrorDocument 400 /error.php
+ErrorDocument 403 /error.php
+ErrorDocument 404 /error.php
+ErrorDocument 500 /error.php

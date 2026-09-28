@@ -3,6 +3,8 @@ require __DIR__ . '/security.php';
 require __DIR__ . '/db.php';
 
 $error = '';
+$username = '';
+$retryAfter = 0;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     checkCsrf();
     $username = is_string($_POST['username'] ?? null) ? $_POST['username'] : '';
@@ -11,17 +13,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $keys = [hash('sha256', 'user:' . $username), hash('sha256', 'ip:' . ($_SERVER['REMOTE_ADDR'] ?? ''))];
     $db->exec('BEGIN IMMEDIATE');
     $db->prepare('DELETE FROM login_attempts WHERE started <= ?')->execute([time() - 900]);
-    $attempt = $db->prepare('SELECT attempts FROM login_attempts WHERE key = ?');
+    $attempt = $db->prepare('SELECT attempts, started FROM login_attempts WHERE key = ?');
     foreach ($keys as $key) {
         $attempt->execute([$key]);
-        if ((int) $attempt->fetchColumn() >= 5) {
-            $db->exec('COMMIT');
-            audit('login_limited');
-            http_response_code(429);
-            header('Retry-After: 900');
-            exit('Too many attempts. Try again later.');
+        $limit = $attempt->fetch();
+        if ($limit && (int) $limit['attempts'] >= 5) {
+            $retryAfter = max($retryAfter, (int) $limit['started'] + 900 - time(), 1);
         }
     }
+    if ($retryAfter > 0) {
+        $db->exec('COMMIT');
+        audit('login_limited');
+        http_response_code(429);
+        header('Retry-After: ' . $retryAfter);
+        $error = 'Too many login attempts. Please try again after 15 minutes.';
+    } else {
     $count = $db->prepare('INSERT INTO login_attempts VALUES (?, 1, ?) ON CONFLICT(key) DO UPDATE SET attempts = attempts + 1');
     foreach ($keys as $key) { $count->execute([$key, time()]); }
     $db->exec('COMMIT');
@@ -39,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     audit('login_failure', ['username' => $username]);
     $error = 'Wrong username or password';
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -51,13 +58,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
   <div class="box">
     <h1>Fuel Panel</h1>
-    <?php if ($error): ?><p class="error"><?= escape($error) ?></p><?php endif; ?>
+    <?php if ($error): ?><p class="error" role="alert"><?= escape($error) ?></p><?php endif; ?>
     <form method="post">
       <input type="hidden" name="csrf" value="<?= escape($_SESSION['csrf']) ?>">
-      <p><label>Username<br><input name="username"></label></p>
-      <p><label>Password<br><input name="password" type="password"></label></p>
+      <p><label>Username<br><input name="username" autocomplete="username" value="<?= escape($username) ?>"></label></p>
+      <p><label>Password<br><input name="password" type="password" autocomplete="current-password"></label></p>
       <p><button>Log in</button></p>
     </form>
+    <?php if ($retryAfter > 0): ?><p><a class="button" href="index.php">Back to login</a></p><?php endif; ?>
   </div>
 </body>
 </html>

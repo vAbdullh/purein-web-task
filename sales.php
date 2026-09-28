@@ -10,14 +10,26 @@ if (empty($_SESSION['user'])) {
 $account = $db->prepare('SELECT id, username, station_id, is_admin FROM users WHERE id = ?');
 $account->execute([$_SESSION['user']['id']]);
 $user = $account->fetch();
-if (!$user) { http_response_code(403); exit('Access denied'); }
+if (!$user) {
+    unset($_SESSION['user']);
+    showError(403, 'Account unavailable', 'Your account is no longer available. Please sign in again or contact your administrator.');
+}
 $admin = (int) $user['is_admin'] === 1;
 $station = $admin ? filter_var($_GET['station'] ?? 1, FILTER_VALIDATE_INT) : $user['station_id'];
-if (!$station || $station < 1) { http_response_code(403); exit('Access denied'); }
+if (!$station || $station < 1) {
+    showError($admin ? 400 : 403, $admin ? 'Invalid station' : 'Access denied',
+        $admin ? 'Please return to sales and choose a valid station.' : 'No station is assigned to your account. Please contact your administrator.');
+}
 // Only admins may select another station.
-if (!$admin && isset($_GET['station']) && (string) $_GET['station'] !== (string) $station) {
+if (!$admin && isset($_GET['station']) && (!is_string($_GET['station']) || $_GET['station'] !== (string) $station)) {
     audit('station_denied', ['user_id' => $user['id']]);
-    http_response_code(403); exit('Access denied');
+    showError(404, 'Wrong station', 'Please return to sales to view your assigned station.');
+}
+// Reject missing stations instead of showing an empty, misleading page.
+$exists = $db->prepare('SELECT id FROM stations WHERE id = ?');
+$exists->execute([$station]);
+if (!$exists->fetchColumn()) {
+    showError(404, 'Station not found', 'This station is unavailable. Please return to sales and choose another station.');
 }
 $query = $db->prepare('SELECT * FROM sales WHERE station_id = ? ORDER BY sold_at DESC');
 $query->execute([$station]);

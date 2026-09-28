@@ -2,8 +2,7 @@
 require __DIR__ . '/security.php';
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Allow: POST');
-    http_response_code(405);
-    exit('POST required');
+    showError(405, 'Use the logout button', 'To log out safely, return to sales and use the Log out button.');
 }
 checkCsrf();
 audit('logout', ['user_id' => $_SESSION['user']['id'] ?? null]);

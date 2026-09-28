@@ -1,4 +1,10 @@
 <?php
+// Keep technical failures in server logs, never in the browser.
+ini_set('display_errors', '0');
+set_exception_handler(function (Throwable $error): void {
+    error_log((string) $error);
+    showError(500, 'Something went wrong', 'We could not complete your request. Please try again shortly.');
+});
 // Apply the same session and CSRF protection on every page.
 ini_set('session.use_strict_mode', '1');
 ini_set('session.use_only_cookies', '1');
@@ -14,8 +20,7 @@ function escape($value): string {
 }
 function checkCsrf(): void {
     if (!is_string($_POST['csrf'] ?? null) || !hash_equals($_SESSION['csrf'], $_POST['csrf'])) {
-        http_response_code(403);
-        exit('Invalid request token');
+        showError(403, 'Please try again', 'This form has expired or could not be verified. Return to the page and submit it again.');
     }
 }
 function audit(string $event, array $details = []): void {
@@ -35,4 +40,35 @@ function audit(string $event, array $details = []): void {
     if (@file_put_contents($filename, $entry, FILE_APPEND | LOCK_EX) === false) {
         error_log('Audit file unavailable: ' . $entry);
     }
+}
+
+// Use a consistent error page with safe, fixed navigation links.
+function showError(int $status, string $title, string $message): never {
+    http_response_code($status);
+    header('Content-Type: text/html; charset=UTF-8');
+    header('Cache-Control: no-store');
+    $signedIn = !empty($_SESSION['user']);
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title><?= escape($title) ?> - Fuel Panel</title>
+      <link rel="stylesheet" href="/style.css">
+    </head>
+    <body class="error-page">
+      <main class="error-card">
+        <p class="error-code">Fuel Panel &middot; <?= $status ?></p>
+        <h1><?= escape($title) ?></h1>
+        <p><?= escape($message) ?></p>
+        <div class="error-actions">
+          <a class="button" href="<?= $signedIn ? '/sales.php' : '/index.php' ?>"><?= $signedIn ? 'Back to sales' : 'Back to login' ?></a>
+          <?php if ($signedIn): ?><a href="/index.php">Go to login</a><?php endif; ?>
+        </div>
+      </main>
+    </body>
+    </html>
+    <?php
+    exit;
 }

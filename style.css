@@ -7,3 +7,14 @@ h1 { font-size: 22px; }
 table.sales { width: 1100px; border-collapse: collapse; margin-top: 16px; }
 table.sales th, table.sales td { border: 1px solid #ccc; padding: 6px 12px; text-align: left; }
 table.sales th { background: #f2f2f2; }
+
+/* Keep error messages readable on small screens. */
+.error-page { background: #f4f6f8; margin: 0; padding: 24px; }
+.error-card { box-sizing: border-box; max-width: 520px; margin: 10vh auto; padding: 32px; background: white; border: 1px solid #dce2e8; border-radius: 12px; box-shadow: 0 6px 24px #0000000a; }
+.error-card p { line-height: 1.6; }
+.error-code { color: #596579; font-size: 13px; }
+.error-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 24px; }
+.button { display: inline-block; padding: 10px 16px; border-radius: 6px; background: #164e87; color: white; text-decoration: none; }
+.button:hover { background: #103b68; }
+.button:focus-visible { outline: 3px solid #d48200; outline-offset: 3px; }
+.box { max-width: 100%; }

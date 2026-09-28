@@ -49,3 +49,12 @@ PHP syntax and functional checks passed on a temporary copy. Apache access rules
 ## Addtional requirements for prod environment
 
 - *HTTPS*: session cookies receive the Secure flag on HTTPS (local HTTP remains supported).
+## Error handling
+
+Login errors appear in the login form. Rate-limited requests keep HTTP 429, show “Too many login attempts. Please try again after 15 minutes.” without a countdown, and include a Back to login button. The Retry-After header reflects the remaining limit window.
+
+Forbidden access, invalid or missing stations, expired forms, and incorrect logout requests show a clear error page with Back to sales for signed-in users or Back to login for visitors. Unexpected application failures show a generic message while technical details go to the server error log. Apache uses the same page for 400, 403, 404, and 500 responses.
+
+- **Hidden private resources:** protected files and directories return HTTP 404 with the same Page not found message as missing resources, rather than revealing them with HTTP 403. Access restrictions remain enforced.
+- **Wrong station:** attempts to view another manager's station return HTTP 404 with a Wrong station message and a Back to sales button.
+- **Hidden implementation errors:** unexpected application failures show a generic error page. Stack traces, internal paths, and exception details are kept out of browser responses and recorded in the server error log.
