@@ -49,3 +49,12 @@ what is the best approcch for php to do: ar/en rtl/ltr ? and to makes the phone 
 
 --- 
 Work with this plan and make sure to implement rtl properly (in html tag and query parameters), add swtich languages buttons.
+
+## 6. Phone View responsive
+(Antigravity Claude 4.6 Thinking)
+
+Make the UI responsive for phones and smaller screens. Add the viewport tag to every page, keep the content width within the screen size, and allow tables to scroll horizontally when needed without breaking the page layout.
+- prevent horizontal page overflow
+- allow tables to scroll horizontally 
+- make inputs and buttons fit the available screen width
+- use media queris
